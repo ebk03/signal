@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AskForm } from "./components/AskForm";
 import { TraceView } from "./components/TraceView";
-import { askAgent } from "./lib/api";
+import { askAgent, API_BASE } from "./lib/api";
 import type { TraceStep } from "./lib/types";
 
 type HealthStatus = "checking" | "ok" | "error";
@@ -13,7 +13,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/health")
+    fetch(`${API_BASE}/health`)
       .then((res) => res.json())
       .then((data) => setHealth(data.status === "ok" ? "ok" : "error"))
       .catch(() => setHealth("error"));
@@ -59,7 +59,10 @@ function App() {
         <AskForm onSubmit={handleAsk} loading={loading} />
 
         {error && (
-          <div className="mt-4 rounded-lg border border-red-800 bg-red-950/50 p-4 text-sm text-red-300">
+          <div
+            data-testid="error-banner"
+            className="mt-4 rounded-lg border border-red-800 bg-red-950/50 p-4 text-sm text-red-300"
+          >
             {error}
           </div>
         )}

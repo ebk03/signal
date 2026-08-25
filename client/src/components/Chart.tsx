@@ -24,7 +24,7 @@ interface ChartProps {
 
 export function Chart({ chartType, title, data }: ChartProps) {
   return (
-    <div className="rounded-lg border border-slate-700 bg-slate-800 p-4">
+    <div data-testid="chart" className="rounded-lg border border-slate-700 bg-slate-800 p-4">
       <h3 className="mb-3 text-sm font-medium text-slate-300">{title}</h3>
       <div className="h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
