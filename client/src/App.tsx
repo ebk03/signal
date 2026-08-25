@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
-import { AskForm } from "./components/AskForm";
-import { TraceView } from "./components/TraceView";
 import { LoginForm } from "./components/LoginForm";
 import { SignupForm } from "./components/SignupForm";
-import { askAgent, API_BASE } from "./lib/api";
+import { Dashboard } from "./components/Dashboard";
+import { AgentPage } from "./components/AgentPage";
+import { API_BASE } from "./lib/api";
 import { useAuth } from "./context/AuthContext";
-import type { TraceStep } from "./lib/types";
 
 type HealthStatus = "checking" | "ok" | "error";
+type View = "dashboard" | "ask" | "login" | "signup";
 
 function App() {
   const { token, user, loading: authLoading, logout } = useAuth();
-  const [authView, setAuthView] = useState<"login" | "signup">("login");
+  const [view, setView] = useState<View>("dashboard");
   const [health, setHealth] = useState<HealthStatus>("checking");
-  const [trace, setTrace] = useState<TraceStep[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`${API_BASE}/health`)
@@ -24,89 +21,85 @@ function App() {
       .catch(() => setHealth("error"));
   }, []);
 
-  // Clear any stale trace/error from a previous session on login/logout.
-  useEffect(() => {
-    setTrace([]);
-    setError(null);
-  }, [token]);
-
-  async function handleAsk(question: string) {
-    if (!token) return;
-    setLoading(true);
-    setError(null);
-    setTrace([]);
-    try {
-      const { trace } = await askAgent(question, token);
-      setTrace(trace);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   if (authLoading) {
     return <div className="min-h-screen bg-slate-900" />;
   }
 
-  if (!token || !user) {
+  const isLoggedIn = Boolean(token && user);
+
+  if (!isLoggedIn && (view === "login" || view === "signup")) {
     return (
       <div className="min-h-screen bg-slate-900 text-slate-100">
-        {authView === "login" ? (
-          <LoginForm onToggle={() => setAuthView("signup")} />
+        <div className="mx-auto max-w-3xl px-4 pt-6">
+          <button
+            onClick={() => setView("dashboard")}
+            className="text-sm text-slate-400 hover:text-slate-200"
+          >
+            ← Back to dashboard
+          </button>
+        </div>
+        {view === "login" ? (
+          <LoginForm onToggle={() => setView("signup")} />
         ) : (
-          <SignupForm onToggle={() => setAuthView("login")} />
+          <SignupForm onToggle={() => setView("login")} />
         )}
       </div>
     );
   }
 
+  const healthClass =
+    health === "ok"
+      ? "font-mono text-xs text-emerald-400"
+      : health === "error"
+        ? "font-mono text-xs text-red-400"
+        : "font-mono text-xs text-slate-500";
+
+  const navButtonClass = (active: boolean) =>
+    active
+      ? "rounded-md bg-slate-800 px-3 py-1 text-sm text-slate-100"
+      : "rounded-md px-3 py-1 text-sm text-slate-400 hover:text-slate-200";
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
       <div className="mx-auto max-w-3xl px-4 py-10">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Signal</h1>
+          <div className="flex items-center gap-6">
+            <h1 className="text-2xl font-semibold">Signal</h1>
+            {isLoggedIn && (
+              <nav className="flex gap-1">
+                <button onClick={() => setView("dashboard")} className={navButtonClass(view === "dashboard")}>
+                  Dashboard
+                </button>
+                <button onClick={() => setView("ask")} className={navButtonClass(view === "ask")}>
+                  Ask Agent
+                </button>
+              </nav>
+            )}
+          </div>
           <div className="flex items-center gap-4">
-            <span
-              className={
-                health === "ok"
-                  ? "font-mono text-xs text-emerald-400"
-                  : health === "error"
-                    ? "font-mono text-xs text-red-400"
-                    : "font-mono text-xs text-slate-500"
-              }
-            >
-              server: {health}
-            </span>
-            <span className="text-xs text-slate-500">{user.email}</span>
-            <button onClick={logout} className="text-xs text-sky-400 hover:underline">
-              Log out
-            </button>
+            <span className={healthClass}>server: {health}</span>
+            {isLoggedIn ? (
+              <>
+                <span className="text-xs text-slate-500">{user!.email}</span>
+                <button onClick={logout} className="text-xs text-sky-400 hover:underline">
+                  Log out
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setView("login")}
+                className="rounded-lg bg-sky-500 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-sky-400"
+              >
+                Log in
+              </button>
+            )}
           </div>
         </div>
 
-        <p className="mb-6 text-slate-400">
-          Ask a question about Hacker News "Who is hiring" postings — the agent writes its
-          own SQL and picks a chart.
-        </p>
-
-        <AskForm onSubmit={handleAsk} loading={loading} />
-
-        {error && (
-          <div
-            data-testid="error-banner"
-            className="mt-4 rounded-lg border border-red-800 bg-red-950/50 p-4 text-sm text-red-300"
-          >
-            {error}
-          </div>
-        )}
-
-        {loading && <p className="mt-6 animate-pulse text-sm text-slate-500">Agent is thinking…</p>}
-
-        {trace.length > 0 && (
-          <div className="mt-6">
-            <TraceView trace={trace} />
-          </div>
+        {view === "ask" && isLoggedIn ? (
+          <AgentPage />
+        ) : (
+          <Dashboard isLoggedIn={isLoggedIn} onLoginClick={() => setView("login")} />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@ import "dotenv/config";
 import Anthropic from "@anthropic-ai/sdk";
 import { AGENT_TOOLS } from "./tools.js";
 import { assertReadOnlySelect, enforceLimit } from "./sqlGuard.js";
-import { runReadOnlyQuery } from "./dbReadOnly.js";
+import { runReadOnlyQuery } from "../db/readOnlyClient.js";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 

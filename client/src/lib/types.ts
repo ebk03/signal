@@ -25,3 +25,9 @@ export interface AuthResponse {
   token: string;
   user: AuthUser;
 }
+
+export interface DashboardStats {
+  totalPostings: number;
+  lastScrapedAt: string | null;
+  skills: ChartDataPoint[];
+}

@@ -5,6 +5,7 @@ import rateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
 import { registerAskRoute } from "./routes/ask.js";
 import { registerAuthRoutes } from "./routes/auth.js";
+import { registerDashboardRoutes } from "./routes/dashboard.js";
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is not set — check server/.env");
@@ -27,6 +28,7 @@ app.get("/health", async () => {
 });
 
 await registerAuthRoutes(app);
+await registerDashboardRoutes(app);
 await registerAskRoute(app);
 
 const port = Number(process.env.PORT ?? 3001);

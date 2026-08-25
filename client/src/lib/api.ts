@@ -1,4 +1,4 @@
-import type { AskResponse, AuthResponse, AuthUser } from "./types";
+import type { AskResponse, AuthResponse, AuthUser, DashboardStats } from "./types";
 
 export const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001";
 
@@ -44,6 +44,16 @@ export async function login(email: string, password: string): Promise<AuthRespon
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
+
+  if (!res.ok) {
+    throw new Error(await parseErrorMessage(res));
+  }
+
+  return res.json();
+}
+
+export async function fetchDashboardStats(): Promise<DashboardStats> {
+  const res = await fetch(`${API_BASE}/api/dashboard/skills`);
 
   if (!res.ok) {
     throw new Error(await parseErrorMessage(res));

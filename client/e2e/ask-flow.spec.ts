@@ -5,7 +5,10 @@ test("sign up, then asking a question renders a chart with no error", async ({ p
 
   await page.goto("/");
 
-  // App defaults to the login view — toggle to signup for a fresh account.
+  // App defaults to the public dashboard for logged-out visitors.
+  await expect(page.getByTestId("chart")).toBeVisible({ timeout: 15_000 });
+
+  await page.getByRole("button", { name: "Log in", exact: true }).click();
   await page.getByRole("button", { name: "Sign up", exact: true }).click();
 
   await page.getByPlaceholder("Email").fill(email);
@@ -13,6 +16,9 @@ test("sign up, then asking a question renders a chart with no error", async ({ p
   await page.getByRole("button", { name: "Sign up", exact: true }).click();
 
   await expect(page.getByText(email)).toBeVisible();
+
+  // Logging in lands back on the dashboard — switch to the agent page.
+  await page.getByRole("button", { name: "Ask Agent", exact: true }).click();
 
   await page
     .getByPlaceholder(/most in-demand skill/i)
