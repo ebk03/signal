@@ -1,10 +1,16 @@
 import type { FastifyInstance } from "fastify";
 import { runAgent } from "../agent/agent.js";
+import { authenticate, rateLimitKeyGenerator } from "../auth/authenticate.js";
 
 export async function registerAskRoute(app: FastifyInstance) {
   app.post<{ Body: { question?: string } }>(
     "/api/ask",
-    { config: { rateLimit: { max: 20, timeWindow: "15 minutes" } } },
+    {
+      preHandler: authenticate,
+      config: {
+        rateLimit: { max: 20, timeWindow: "15 minutes", keyGenerator: rateLimitKeyGenerator },
+      },
+    },
     async (request, reply) => {
       const question = request.body?.question;
 

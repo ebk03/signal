@@ -15,3 +15,13 @@ export type TraceStep =
 export interface AskResponse {
   trace: TraceStep[];
 }
+
+export interface AuthUser {
+  id: number;
+  email: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: AuthUser;
+}

@@ -8,6 +8,13 @@
       "when": 1787248514540,
       "tag": "0000_lean_darkhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787673015724,
+      "tag": "0001_tough_supernaut",
+      "breakpoints": true
     }
   ]
 }

@@ -13,3 +13,10 @@ export const jobPostings = pgTable("job_postings", {
   postedAt: timestamp("posted_at", { withTimezone: true }),
   scrapedAt: timestamp("scraped_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
