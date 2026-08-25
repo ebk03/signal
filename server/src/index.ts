@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import { registerAskRoute } from "./routes/ask.js";
 
 const app = Fastify({ logger: true });
 
@@ -10,6 +11,8 @@ await app.register(cors, {
 app.get("/health", async () => {
   return { status: "ok" };
 });
+
+await registerAskRoute(app);
 
 const port = Number(process.env.PORT ?? 3001);
 
