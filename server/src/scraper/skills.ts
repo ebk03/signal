@@ -16,6 +16,8 @@ export const SKILL_KEYWORDS = [
   "Linux", "Nginx",
   // ml / ai
   "Machine Learning", "TensorFlow", "PyTorch", "NLP", "LLM", "OpenAI",
+  "RAG", "GenAI", "Generative AI", "Vector Database", "Embeddings",
+  "Prompt Engineering", "AI Agent", "Anthropic",
   // mobile
   "iOS", "Android", "React Native", "Flutter",
 ] as const;
@@ -31,9 +33,12 @@ export function extractSkills(text: string): string[] {
     // fails to match at the edges of keywords like "C#", "C++", or ".NET" —
     // the boundary between "#"/"+"/"." and surrounding punctuation or spaces
     // never counts as a word boundary. An alphanumeric-aware lookaround
-    // handles punctuation-edged keywords correctly instead.
+    // handles punctuation-edged keywords correctly instead. The optional
+    // trailing "s" lets multi-word keywords match their plural form too
+    // (e.g. "React Native" also matches "React Natives"), without requiring
+    // a separate dictionary entry per form.
     const pattern = new RegExp(
-      `(?<![A-Za-z0-9])${escapeRegex(skill)}(?![A-Za-z0-9])`,
+      `(?<![A-Za-z0-9])${escapeRegex(skill)}s?(?![A-Za-z0-9])`,
       "i",
     );
     if (pattern.test(text)) {
