@@ -28,14 +28,14 @@ export function LoginForm({ onToggle }: LoginFormProps) {
   return (
     <div className="mx-auto mt-24 max-w-sm">
       <h2 className="mb-8 font-display text-2xl text-fg">Log in to Signal</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           required
-          className="rounded-lg border border-line bg-surface px-4 py-2 text-fg placeholder-muted focus:border-accent focus:outline-none"
+          className="border-0 border-b border-line bg-transparent px-1 py-2 text-fg placeholder-muted focus:border-accent focus:outline-none"
         />
         <input
           type="password"
@@ -43,7 +43,7 @@ export function LoginForm({ onToggle }: LoginFormProps) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
-          className="rounded-lg border border-line bg-surface px-4 py-2 text-fg placeholder-muted focus:border-accent focus:outline-none"
+          className="border-0 border-b border-line bg-transparent px-1 py-2 text-fg placeholder-muted focus:border-accent focus:outline-none"
         />
 
         {error && (

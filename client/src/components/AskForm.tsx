@@ -15,13 +15,13 @@ export function AskForm({ onSubmit, loading }: AskFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-3">
+    <form onSubmit={handleSubmit} className="flex items-end gap-4">
       <input
         type="text"
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="e.g. What's the most in-demand skill this month?"
-        className="flex-1 rounded-lg border border-line bg-surface px-4 py-2 text-fg placeholder-muted focus:border-accent focus:outline-none"
+        className="flex-1 border-0 border-b border-line bg-transparent px-1 py-2 text-fg placeholder-muted focus:border-accent focus:outline-none"
         disabled={loading}
       />
       <button

@@ -33,7 +33,7 @@ function TraceStepView({ step }: { step: TraceStep }) {
       return (
         <div className="border-b border-line pb-8">
           <p className="mb-2 font-mono text-xs uppercase tracking-wide text-muted">Query</p>
-          <pre className="overflow-x-auto font-mono text-sm text-fg">
+          <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-fg">
             <code>{step.query}</code>
           </pre>
         </div>
