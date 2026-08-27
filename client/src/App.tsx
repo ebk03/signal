@@ -22,19 +22,16 @@ function App() {
   }, []);
 
   if (authLoading) {
-    return <div className="min-h-screen bg-slate-900" />;
+    return <div className="min-h-screen bg-canvas" />;
   }
 
   const isLoggedIn = Boolean(token && user);
 
   if (!isLoggedIn && (view === "login" || view === "signup")) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-100">
+      <div className="min-h-screen bg-canvas text-fg">
         <div className="mx-auto max-w-3xl px-4 pt-6">
-          <button
-            onClick={() => setView("dashboard")}
-            className="text-sm text-slate-400 hover:text-slate-200"
-          >
+          <button onClick={() => setView("dashboard")} className="text-sm text-muted hover:text-fg">
             ← Back to dashboard
           </button>
         </div>
@@ -47,24 +44,24 @@ function App() {
     );
   }
 
+  const showAgentPage = view === "ask" && isLoggedIn;
+
   const healthClass =
     health === "ok"
-      ? "font-mono text-xs text-emerald-400"
+      ? "font-mono text-xs text-fg/60"
       : health === "error"
         ? "font-mono text-xs text-red-400"
-        : "font-mono text-xs text-slate-500";
+        : "font-mono text-xs text-muted";
 
   const navButtonClass = (active: boolean) =>
-    active
-      ? "rounded-md bg-slate-800 px-3 py-1 text-sm text-slate-100"
-      : "rounded-md px-3 py-1 text-sm text-slate-400 hover:text-slate-200";
+    active ? "px-3 py-1 text-sm text-fg" : "px-3 py-1 text-sm text-muted hover:text-fg";
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <div className="min-h-screen bg-canvas text-fg">
       <div className="mx-auto max-w-3xl px-4 py-10">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-12 flex items-center justify-between border-b border-line pb-6">
           <div className="flex items-center gap-6">
-            <h1 className="text-2xl font-semibold">Signal</h1>
+            <h1 className="font-display text-2xl text-fg">Signal</h1>
             {isLoggedIn && (
               <nav className="flex gap-1">
                 <button onClick={() => setView("dashboard")} className={navButtonClass(view === "dashboard")}>
@@ -80,15 +77,18 @@ function App() {
             <span className={healthClass}>server: {health}</span>
             {isLoggedIn ? (
               <>
-                <span className="text-xs text-slate-500">{user!.email}</span>
-                <button onClick={logout} className="text-xs text-sky-400 hover:underline">
+                <span className="font-mono text-xs text-muted">{user!.email}</span>
+                <button
+                  onClick={logout}
+                  className="text-xs text-fg underline decoration-line underline-offset-4 hover:decoration-fg"
+                >
                   Log out
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setView("login")}
-                className="rounded-lg bg-sky-500 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-sky-400"
+                className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-fg transition-opacity hover:opacity-90"
               >
                 Log in
               </button>
@@ -96,7 +96,7 @@ function App() {
           </div>
         </div>
 
-        {view === "ask" && isLoggedIn ? (
+        {showAgentPage ? (
           <AgentPage />
         ) : (
           <Dashboard isLoggedIn={isLoggedIn} onLoginClick={() => setView("login")} />

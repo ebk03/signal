@@ -34,7 +34,7 @@ export function AgentPage() {
 
   return (
     <div>
-      <p className="mb-6 text-slate-400">
+      <p className="mb-12 max-w-xl font-display text-xl leading-snug text-fg/90">
         Ask a question about Hacker News "Who is hiring" postings — the agent writes its
         own SQL and picks a chart.
       </p>
@@ -42,18 +42,15 @@ export function AgentPage() {
       <AskForm onSubmit={handleAsk} loading={loading} />
 
       {error && (
-        <div
-          data-testid="error-banner"
-          className="mt-4 rounded-lg border border-red-800 bg-red-950/50 p-4 text-sm text-red-300"
-        >
+        <div data-testid="error-banner" className="mt-8 border-b border-line pb-8 text-sm text-red-400">
           {error}
         </div>
       )}
 
-      {loading && <p className="mt-6 animate-pulse text-sm text-slate-500">Agent is thinking…</p>}
+      {loading && <p className="mt-8 animate-pulse text-sm text-muted">Agent is thinking…</p>}
 
       {trace.length > 0 && (
-        <div className="mt-6">
+        <div className="mt-10">
           <TraceView trace={trace} />
         </div>
       )}
