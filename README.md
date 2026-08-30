@@ -1,8 +1,8 @@
 # Signal
 
-**An AI agent that answers questions about the job market by writing its own SQL — not a fixed set of queries.**
+Live demo: https://dr18b4ljdz2lr.cloudfront.net
 
-**Live demo:** https://dr18b4ljdz2lr.cloudfront.net
+**An AI agent that answers questions about the job market by writing its own SQL — not a fixed set of queries.**
 
 ## What this is
 
