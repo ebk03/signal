@@ -6,23 +6,48 @@ interface TraceViewProps {
   trace: TraceStep[];
 }
 
+const REASONING_TYPES = new Set(["sql", "result", "error"]);
+
 export function TraceView({ trace }: TraceViewProps) {
-  const [visibleCount, setVisibleCount] = useState(0);
+  const [showReasoning, setShowReasoning] = useState(false);
 
   useEffect(() => {
-    setVisibleCount(0);
-    if (trace.length === 0) return;
-    const timers = trace.map((_, i) =>
-      setTimeout(() => setVisibleCount((c) => Math.max(c, i + 1)), i * 500),
-    );
-    return () => timers.forEach(clearTimeout);
+    const hasAnswer = trace.some((step) => step.type === "text" || step.type === "chart");
+    const hasReasoning = trace.some((step) => REASONING_TYPES.has(step.type));
+    // If the agent never produced a final answer (e.g. it errored out every
+    // turn), show the reasoning trace by default — it's the only
+    // information the user has to go on.
+    setShowReasoning(!hasAnswer && hasReasoning);
   }, [trace]);
+
+  const answerSteps = trace.filter((step) => step.type === "text" || step.type === "chart");
+  const reasoningSteps = trace.filter((step) => REASONING_TYPES.has(step.type));
 
   return (
     <div className="flex flex-col gap-8">
-      {trace.slice(0, visibleCount).map((step, i) => (
+      {answerSteps.map((step, i) => (
         <TraceStepView key={i} step={step} />
       ))}
+
+      {reasoningSteps.length > 0 && (
+        <div className="border-t border-line pt-6">
+          <button
+            onClick={() => setShowReasoning((v) => !v)}
+            className="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-muted hover:text-fg"
+          >
+            <span>{showReasoning ? "▾" : "▸"}</span>
+            {showReasoning ? "Hide reasoning" : "Show reasoning"}
+          </button>
+
+          {showReasoning && (
+            <div className="mt-6 flex flex-col gap-8">
+              {reasoningSteps.map((step, i) => (
+                <TraceStepView key={i} step={step} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
